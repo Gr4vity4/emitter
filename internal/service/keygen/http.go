@@ -43,12 +43,34 @@ func (s *Service) HTTP() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		f := keygenForm{Sub: true}
 		switch r.Method {
-		case "GET":
-		case "POST":
+		// case "GET":
+		// case "POST":
+		// 	ok := f.parse(r)
+		// 	if ok {
+		// 		if f.isValid() {
+		// 			key, err := s.CreateKey(f.Key, f.Channel, f.access(), f.expires())
+		// 			if err != nil {
+		// 				f.Response = err.Error()
+		// 			} else {
+		// 				f.Response = fmt.Sprintf("channel: %s\nkey    : %s", f.Channel, key)
+		// 			}
+
+		// 		}
+		// 	} else {
+		// 		f.Response = "invalid arguments"
+		// 	}
+
+		// default:
+		// 	http.Error(w, http.ErrNotSupported.Error(), 405)
+		// 	return
+    // }
+    case "GET":
 			ok := f.parse(r)
 			if ok {
 				if f.isValid() {
-					key, err := s.CreateKey(f.Key, f.Channel, f.access(), f.expires())
+          secretKey:="JZoiDrfgoFFfgnUMVCYXAMSGx7AyV8Qi"
+          accessChannel:="/"
+					key, err := s.CreateKey(secretKey, accessChannel, f.access(), f.expires())
 					if err != nil {
 						f.Response = err.Error()
 					} else {
@@ -179,10 +201,12 @@ func (f *keygenForm) expires() time.Time {
 func (f *keygenForm) access() uint8 {
 	required := security.AllowNone
 	if f.Sub {
-		required |= security.AllowRead
+    // required |= security.AllowRead
+    return true
 	}
 	if f.Pub {
-		required |= security.AllowWrite
+    // required |= security.AllowWrite
+    return true
 	}
 	if f.Load {
 		required |= security.AllowLoad
